@@ -1,8 +1,6 @@
 # C1Presentation-mapboxStorytelling-nycTransportation
 
 
-# C1Presentation-mapboxStorytelling-nycTransportation
-
 This project utilizes Mapbox's Storytelling feature to depict the public transportation situation in New York City. We employed tools like Python and Grasshopper for a series of data visualizations and exported the corresponding JSON files from Python and Grasshopper. Using JavaScript and Mapbox, these visualizations are then showcased on the website.
 
 ## Project Structure
