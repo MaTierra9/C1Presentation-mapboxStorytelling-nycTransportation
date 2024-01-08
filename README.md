@@ -25,3 +25,6 @@ This project utilizes Mapbox's Storytelling feature to depict the public transpo
 1. Clone this repository locally.
 2. Open `index.html` in a browser to view the project.
 3. Modify the configuration in `config.js` if needed.
+
+## Checking live website directly
+-In short, you can check the live website without going through this repo at here: https://joshyw698.github.io/C1Presentation-mapboxStorytelling-nycTransportation/
