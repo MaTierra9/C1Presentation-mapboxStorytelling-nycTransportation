@@ -241,8 +241,8 @@ map.on("load", function () {
 //     }
     
 //     map.addLayer({
-//         'id': 'Subway_Entrances',
-//         'type': 'circle',
+//         'id': 'MunicipiosEdomex',
+//         'type': 'line',
 //         'source': {
 //             'type': 'geojson',
 //             'data': 'data/Subway Entrances.geojson'
