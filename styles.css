@@ -41,7 +41,7 @@ body {
     font-weight: 700;
     text-transform: uppercase;
     font-family: 'Merriweather', serif;
-    text-align: left;
+    text-align: center;
     margin: auto;
     max-width: 600px;
 }
@@ -123,6 +123,10 @@ a, a:hover, a:visited {
 .dark {
     color: #fafafa;
     background-color: #444;
+}
+.adnoticias {
+    color: #222;
+    background-color: #fafafa;
 }
 .step {
     padding-bottom: 50vh;

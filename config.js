@@ -1,38 +1,96 @@
 var config = {    
-    accessToken: 'pk.eyJ1Ijoiam9zaHdvbmciLCJhIjoiY2xra2JzYmMwMDRoODNkbW01cWQ5a3YxZyJ9.9FkG10VE5UOlc6BZhD2_zA',
-    style: 'mapbox://styles/joshwong/cll14ij3900u101qpdml9a1u2',
-    theme: 'dark',
+    accessToken: 'pk.eyJ1IjoiYWRub3RpY2lhcyIsImEiOiJjbTlyb2Mzb2IxOXQzMmtvZ2RkZWoybzMxIn0.eGFfTyBGuA16Gdx92WmbOw',
+    style: 'mapbox://styles/adnoticias/cmae63g66004101s884694lay',
+    theme: 'adnoticias',
     backgroundImage: 'images/cover page1.png',
-    alignment: 'left',
-    toptitle: 'Mapping | 3D Data Visualization | Machine Learning | Mapbox Storytelling',
-    title: 'The Equity of Transportation System in NYC',
-    byline: 'By Yilin Wang',
-    description: '<p>In selecting New York City public transportation system as the subject of investigation, I was predominantly captivated by questions surrounding the equality of distribution within this intricate infrastructure. As an internationally renowned metropolis, public transit in New York City stands as an integral facet of daily life. Yet, ensuring equitable access to all its inhabitants within such a bustling system presents an undeniably challenging endeavor.</p><p>To delve into the nuances of transit distribution and its ramifications on the city populace, I employed both 2D and 3D data visualization techniques coupled with data analysis. Additionally, I tried some basic method on machine learning and AR,when I tried to build an app called Emoplant. The culmination of this research is manifested through Mapbox Storytelling <a href="https://pointsunknown.nyc/web%20mapping/mapbox/2020/04/15/11_MapboxStorytelling.html"> Mapbox Storytelling</a>, aiming to present more vividly. </p><p> As for my future interests, I am looking forward to explore the prospects of smart cities and data-driven urban design.</p>',
-    footer: 'This project is based on data by the <a href="https://opendata.cityofnewyork.us/">NYC OpenData</a> and <a href="https://www.nyc.gov/site/planning/data-maps/open-data/dwn-pluto-mappluto.page">NYC Department of City Planning</a>',
+    toptitle: 'Publicado el 7 de mayo de 2025',
+    title: 'Rancho Palma: Un agujero negro de la Operación Bastión',
+    byline: 'Investigación y visualización: Ivan Ortiz',
+    description: 'Dos ranchos asegurados en la operación Bastión, en contra de la Familia Michoacana, ya habían sido cateados años atrás; pero se presentaron como recientes. Autoridades mexiquenses y federales no brindaron explicaciones al respecto.',
+    footer: '<br> Esta visualización fue creada usando <a href="https://github.com/mapbox/storytelling" target="_blank">Mapbox Storytelling</a>',
     footerAttribution: '<a href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox</a> | <a href="http://www.openstreetmap.org/about/" target="_blank">© OpenStreetMap</a>',
-    videoURL: 'images/emotion_recognition_video.mp4',
+    videoURL: '',
     chapters: [
         {
-            id: 'taxi_mapping',
-            title: 'DISTRIBUTION OF TAXIS EACH BLOCK',
-            image: 'images/taxi_mapping1.png',
-            imageCredit: 'Data from NYC Opendata, Census',
-            description: 'At first, I tried to understand NYC public transport thorugh mapping of a broad scale. I started by applying mapping methods in python to see how different public transport options spread out across New York City. Specifically, I looked at where all the taxis went on February 1, 2019. With this, I aimed to get a clear picture of taxi routes on that day. This visual approach helped me get a better sense of the city transport patterns and how transportation is distributed throughout different parts of the city.',
+            id: 'slug-style-id',
+            alignment: 'full',
+            hidden: false,
+            title: '',
+            image: 'assets/AD N Logo.svg',
+            description: 'A finales de marzo de 2025 autoridades estatales y federales realizaron la Operación Bastión, una serie de cateos en 21 inmuebles presuntamente utilizados por la Nueva Familia Michoacana en el Estado de México. Sin embargo, dos de de estos ranchos, Calpa y Las Piñuelas, fueron asegurados en 2020 y 2022. Así lo revelan informes albergados los Guacamaya Leaks localizados por AD Noticias. Ni la Fiscalía ni el Gobierno Mexiquense ni el Ejército ',
             location: {
-                center: [-74.00619, 40.73926],
-                zoom: 11,
-                pitch: 0,
+                center: [-99.68780, 19.33646],
+                zoom: 4.8,
+                pitch: 31.50,
                 bearing: 0
             },
-            onChapterEnter: [{
-                layer: 'taxi_mapping',
-                opacity: 0.8},
+            mapAnimation: 'flyTo',
+            rotateAnimation: false,
+            callback: '',
+            onChapterEnter: [
+                {
+                    layer: 'MunicipiosEdomex',
+                    opacity: 1
+                },
+                {
+                    layer: 'FMMunicipios2020',
+                    opacity: 0
+                },
+                {
+                    layer: 'FMMunicipios2024',
+                    opacity: 0
+                },
+                {
+                    layer: 'ranchos-opb',
+                    opacity: 0
+                },
+                {
+                    layer: 'bases-halconeo-2020',
+                    opacity: 0
+                },
+                {
+                    layer: 'rancho-las-piuelas-p',
+                    opacity: 0
+                },
+                {
+                    layer: 'rancho-calpa-p',
+                    opacity: 0
+                },
+                {
+                    layer: 'ataque-sep-2020',
+                    opacity:0
+                }
             ],
-            onChapterExit: [{
-                layer: 'taxi_mapping',
-                opacity: 0
-            },
-            ],
+            onChapterExit: [
+                {
+                    layer: 'MunicipiosEdomex',
+                    opacity: 1
+                },
+                {
+                    layer: 'FMMunicipios2020',
+                    opacity: 0
+                },
+                {
+                    layer: 'FMMunicipios2024',
+                    opacity: 1
+                },
+                {
+                    layer: 'ranchos-opb',
+                    opacity: 0
+                },
+                {
+                    layer: 'bases-halconeo-2020',
+                    opacity: 0
+                },
+                {
+                    layer: 'rancho-las-piuelas-p',
+                    opacity: 0
+                },
+                {
+                    layer: 'rancho-calpa-p',
+                    opacity: 0
+                }
+            ]
         },
         {
             id: 'bike_mapping',

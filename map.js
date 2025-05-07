@@ -1,7 +1,7 @@
-mapboxgl.accessToken = 'pk.eyJ1Ijoiam9zaHdvbmciLCJhIjoiY2xra2JzYmMwMDRoODNkbW01cWQ5a3YxZyJ9.9FkG10VE5UOlc6BZhD2_zA';
+mapboxgl.accessToken = 'pk.eyJ1IjoiYWRub3RpY2lhcyIsImEiOiJjbWFlNm9vYjAwNDhlMm1wdjI0czdmZHQ0In0.Tqcwo67uQ-pwBK9Xaph8Cg';
 var map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/joshwong/cll14ij3900u101qpdml9a1u2',
+    style: 'mapbox://styles/adnoticias/cmae63g66004101s884694lay',
     zoom: 10,
     center: [-74, 40.725],
     maxZoom: 15,
@@ -19,12 +19,14 @@ var layerTypes = {
     'circle': ['circle-opacity', 'circle-stroke-opacity'],
     'symbol': ['icon-opacity', 'text-opacity'],
     'raster': ['raster-opacity'],
-    'fill-extrusion': ['fill-extrusion-opacity']
+    'fill-extrusion': ['fill-extrusion-opacity'],
+    'heatmap': ['heatmap-opacity']
 }
 var alignments = {
     'left': 'lefty',
     'center': 'centered',
-    'right': 'righty'
+    'right': 'righty',
+    'full': 'fully'
 }
 
 /* These two functions help turn on and off individual layers (through their
@@ -50,7 +52,6 @@ config.js file */
 // Main 'story' and 'features' elements
 var story = document.getElementById('story');
 var features = document.createElement('div');
-features.classList.add(alignments[config.alignment]);
 features.setAttribute('id', 'features');
 
 // Main 'header' element
@@ -132,6 +133,10 @@ config.chapters.forEach((record, idx) => {
     /* Appends the chapter to the container element and the container
     element to the features element */
     container.appendChild(chapter);
+    container.classList.add(alignments[record.alignment] || 'centered');
+            if (record.hidden) {
+                container.classList.add('hidden');
+            }
     features.appendChild(container);
 });
 
@@ -173,13 +178,13 @@ if (footer.innerText.length > 0) {
 mapboxgl.accessToken = config.accessToken;
 
 // Honestly, don't know what this does
-const transformRequest = (url) => {
-    const hasQuery = url.indexOf("?") !== -1;
-    const suffix = hasQuery ? "&pluginName=journalismScrollytelling" : "?pluginName=journalismScrollytelling";
-    return {
-        url: url + suffix
-    }
-}
+// const transformRequest = (url) => {
+//     const hasQuery = url.indexOf("?") !== -1;
+//     const suffix = hasQuery ? "&pluginName=journalismScrollytelling" : "?pluginName=journalismScrollytelling";
+//     return {
+//         url: url + suffix
+//     }
+// }
 
 /* This section creates the map element with the
 attributes from the main section of the config.js file */
@@ -191,8 +196,7 @@ var map = new mapboxgl.Map({
     zoom: config.chapters[0].location.zoom,
     bearing: config.chapters[0].location.bearing,
     pitch: config.chapters[0].location.pitch,
-    scrollZoom: true,
-    transformRequest: transformRequest
+    scrollZoom: false
 });
 
 // Instantiates the scrollama function
@@ -203,390 +207,413 @@ tutorial. At the end, however, we setup the functions that will tie the
 scrolling to the chapters and move the map from one location to another
 while changing the zoom level, pitch and bearing */
 
-map.on('load', function () {
-    var layers = map.getStyle().layers;
-    var firstSymbolId;
-    for (var i=0; i<layers.length; i++){
-        if (layers[i].type === 'symbol'){
-            firstSymbolId = layers[i].id;
-            break;
-        }
-    }
+map.on("load", function () {
+    if (config.use3dTerrain) {
+        map.addSource('mapbox-dem', {
+            'type': 'raster-dem',
+            'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+            'tileSize': 512,
+            'maxzoom': 14
+        });
+        // add the DEM source as a terrain layer with exaggerated height
+        map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+
+        // add a sky layer that will show when the map is highly pitched
+        map.addLayer({
+            'id': 'sky',
+            'type': 'sky',
+            'paint': {
+                'sky-type': 'atmosphere',
+                'sky-atmosphere-sun': [0.0, 0.0],
+                'sky-atmosphere-sun-intensity': 15
+            }
+        });
+    };
+
+// map.on('load', function () {
+//     var layers = map.getStyle().layers;
+//     var firstSymbolId;
+//     for (var i=0; i<layers.length; i++){
+//         if (layers[i].type === 'symbol'){
+//             firstSymbolId = layers[i].id;
+//             break;
+//         }
+//     }
     
-    map.addLayer({
-        'id': 'Subway_Entrances',
-        'type': 'circle',
-        'source': {
-            'type': 'geojson',
-            'data': 'data/Subway Entrances.geojson'
-        },
-        'paint': {
-            'circle-color': '#edde61',
-            'circle-stroke-color': '#4d4d4d',
-            'circle-stroke-width': 0.5,
-            'circle-opacity': 0,
-            'circle-stroke-opacity': 0,
-        },
-        'circle-radius': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            10, 15, // 当zoom为10时，半径为5
-            15, 35  // 当zoom为15时，半径为15
-        ],
+//     map.addLayer({
+//         'id': 'Subway_Entrances',
+//         'type': 'circle',
+//         'source': {
+//             'type': 'geojson',
+//             'data': 'data/Subway Entrances.geojson'
+//         },
+//         'paint': {
+//             'circle-color': '#edde61',
+//             'circle-stroke-color': '#4d4d4d',
+//             'circle-stroke-width': 0.5,
+//             'circle-opacity': 0,
+//             'circle-stroke-opacity': 0,
+//         },
+//         'circle-radius': [
+//             'interpolate',
+//             ['linear'],
+//             ['zoom'],
+//             10, 15, // 当zoom为10时，半径为5
+//             15, 35  // 当zoom为15时，半径为15
+//         ],
         
-    }, firstSymbolId);
+//     }, firstSymbolId);
 
-    map.addLayer({
-        'id': 'taxi_mapping',
-        'type': 'fill',
-        'source': {
-            'type': 'geojson',
-            'data': 'data/taxi_mapping.geojson'
-        },
-        'paint': {
-            'fill-color': ['interpolate', ['linear'], ['get', 'counts'],
-                2, '#4966a0',
-                6, '#adcbf9',
-                100, '#fdf455',
-                500, '#ea7f01',
-                2000, '#dd2800',
-            ],
-            'fill-opacity': 0,
-        }
-    }, firstSymbolId);
+//     map.addLayer({
+//         'id': 'taxi_mapping',
+//         'type': 'fill',
+//         'source': {
+//             'type': 'geojson',
+//             'data': 'data/taxi_mapping.geojson'
+//         },
+//         'paint': {
+//             'fill-color': ['interpolate', ['linear'], ['get', 'counts'],
+//                 2, '#4966a0',
+//                 6, '#adcbf9',
+//                 100, '#fdf455',
+//                 500, '#ea7f01',
+//                 2000, '#dd2800',
+//             ],
+//             'fill-opacity': 0,
+//         }
+//     }, firstSymbolId);
 
-    map.addLayer({
-        'id': 'bike_mapping',
-        'type': 'fill',
-        'source': {
-            'type': 'geojson',
-            'data': 'data/bike_mapping.geojson'
-        },
-        'paint': {
-            'fill-color': ['interpolate', ['linear'], ['get', 'counts'],
-                3, '#4966a0',
-                34, '#adcbf9',
-                516, '#fdf455',
-                1032, '#ea7f01',
-                2000, '#dd2800',
-            ],
-            'fill-opacity': 0,
-        }
-    }, firstSymbolId);
+//     map.addLayer({
+//         'id': 'bike_mapping',
+//         'type': 'fill',
+//         'source': {
+//             'type': 'geojson',
+//             'data': 'data/bike_mapping.geojson'
+//         },
+//         'paint': {
+//             'fill-color': ['interpolate', ['linear'], ['get', 'counts'],
+//                 3, '#4966a0',
+//                 34, '#adcbf9',
+//                 516, '#fdf455',
+//                 1032, '#ea7f01',
+//                 2000, '#dd2800',
+//             ],
+//             'fill-opacity': 0,
+//         }
+//     }, firstSymbolId);
 
-    map.addLayer({
-        'id': 'bus_mapping',
-        'type': 'heatmap',
-        'source': {
-            'type': 'geojson',
-            'data': 'data/bus_mapping.geojson'
-        },
-        'maxzoom': 11,
-        'paint': {
-            // Increase the heatmap weight based on frequency and property magnitude
-            'heatmap-weight': [
-                'interpolate',
-                ['linear'],
-                ['get', 'counts'], // Assuming 'counts' is the property name in your GeoJSON
-                0, 0,
-                10, 1
-            ],
-            // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
-            'heatmap-color': [
-                'interpolate',
-                ['linear'],
-                ['heatmap-density'],
-                0.0, '#4966a0',
-                0.2, '#adcbf9',
-                0.4, '#fef454',
-                0.6, '#ea7f01',
-                0.8, '#ea7f01',
-                1.0, '#e42a00'
-            ],
-            'heatmap-opacity': 0.2,
-        }
-    }, firstSymbolId);
+//     map.addLayer({
+//         'id': 'bus_mapping',
+//         'type': 'heatmap',
+//         'source': {
+//             'type': 'geojson',
+//             'data': 'data/bus_mapping.geojson'
+//         },
+//         'maxzoom': 11,
+//         'paint': {
+//             // Increase the heatmap weight based on frequency and property magnitude
+//             'heatmap-weight': [
+//                 'interpolate',
+//                 ['linear'],
+//                 ['get', 'counts'], // Assuming 'counts' is the property name in your GeoJSON
+//                 0, 0,
+//                 10, 1
+//             ],
+//             // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
+//             'heatmap-color': [
+//                 'interpolate',
+//                 ['linear'],
+//                 ['heatmap-density'],
+//                 0.0, '#4966a0',
+//                 0.2, '#adcbf9',
+//                 0.4, '#fef454',
+//                 0.6, '#ea7f01',
+//                 0.8, '#ea7f01',
+//                 1.0, '#e42a00'
+//             ],
+//             'heatmap-opacity': 0.2,
+//         }
+//     }, firstSymbolId);
     
-    map.addLayer({
-        'id': 'subway_mapping',
-        'type': 'fill-extrusion',
-        'source': {
-            'type': 'geojson',
-            'data': 'data/subway_mapping.geojson'
-        },
-        'paint': {
-            'fill-extrusion-color': ['interpolate', ['linear'], ['get', 'counts'],
-                0, '#4966a0',
-                1, '#adcbf9',
-                3, '#fef454',
-                6, '#ea7f01',
-                8, '#e42a00',
-            ],
-            'fill-extrusion-height': [
-                'interpolate',
-                ['linear'],
-                ['get', 'counts'],
-                0, 0,
-                1, 1000,
-                3, 2000,
-                6, 4000,
-                8, 7000
-            ],
-            'fill-extrusion-opacity': 0,
-            'fill-extrusion-base': 0,
-        }
-    }, firstSymbolId);
+//     map.addLayer({
+//         'id': 'subway_mapping',
+//         'type': 'fill-extrusion',
+//         'source': {
+//             'type': 'geojson',
+//             'data': 'data/subway_mapping.geojson'
+//         },
+//         'paint': {
+//             'fill-extrusion-color': ['interpolate', ['linear'], ['get', 'counts'],
+//                 0, '#4966a0',
+//                 1, '#adcbf9',
+//                 3, '#fef454',
+//                 6, '#ea7f01',
+//                 8, '#e42a00',
+//             ],
+//             'fill-extrusion-height': [
+//                 'interpolate',
+//                 ['linear'],
+//                 ['get', 'counts'],
+//                 0, 0,
+//                 1, 1000,
+//                 3, 2000,
+//                 6, 4000,
+//                 8, 7000
+//             ],
+//             'fill-extrusion-opacity': 0,
+//             'fill-extrusion-base': 0,
+//         }
+//     }, firstSymbolId);
 
-    map.addLayer({
-        'id': 'hex_binning',
-        'type': 'fill-extrusion',
-        'source': {
-            'type': 'geojson',
-            'data': 'data/MN_Hex_Binning.geojson'
-        },
-        'paint': {
-            'fill-extrusion-color': ['interpolate', ['linear'], ['get', 'Entrances_in_Equal_Area_Binning'],
-                0, '#e2d392',
-                5, '#ebd088',
-                10, '#e4a850',
-                15, '#de7d14',
-                20, '#d16b01',
-            ],
-            'fill-extrusion-opacity': [
-                'step',
-                ['get', 'Entrances_in_Equal_Area_Binning'],
-                0, 0,// 默认值
-                5, 1 // 当'Entrances_in_Equal_Area_Binning'大于或等于0.1时，透明度为1
-            ],
-            'fill-extrusion-height': [
-                'interpolate',
-                ['linear'],
-                ['get', 'Entrances_in_Equal_Area_Binning'],
-                0, 0,
-                5, 1000,
-                10, 2000,
-                15, 4000,
-                20, 7000
-            ],
-            'fill-extrusion-opacity': 0,
-            'fill-extrusion-base': 0,
-        }
-    }, firstSymbolId);
+//     map.addLayer({
+//         'id': 'hex_binning',
+//         'type': 'fill-extrusion',
+//         'source': {
+//             'type': 'geojson',
+//             'data': 'data/MN_Hex_Binning.geojson'
+//         },
+//         'paint': {
+//             'fill-extrusion-color': ['interpolate', ['linear'], ['get', 'Entrances_in_Equal_Area_Binning'],
+//                 0, '#e2d392',
+//                 5, '#ebd088',
+//                 10, '#e4a850',
+//                 15, '#de7d14',
+//                 20, '#d16b01',
+//             ],
+//             'fill-extrusion-opacity': [
+//                 'step',
+//                 ['get', 'Entrances_in_Equal_Area_Binning'],
+//                 0, 0,// 默认值
+//                 5, 1 // 当'Entrances_in_Equal_Area_Binning'大于或等于0.1时，透明度为1
+//             ],
+//             'fill-extrusion-height': [
+//                 'interpolate',
+//                 ['linear'],
+//                 ['get', 'Entrances_in_Equal_Area_Binning'],
+//                 0, 0,
+//                 5, 1000,
+//                 10, 2000,
+//                 15, 4000,
+//                 20, 7000
+//             ],
+//             'fill-extrusion-opacity': 0,
+//             'fill-extrusion-base': 0,
+//         }
+//     }, firstSymbolId);
 
-    map.addLayer({
-        'id': 'MN_105_mobility1',
-        'type': 'line',
-        'source': {
-            'type': 'geojson',
-            'data': 'data/MN_105_walkability1.geojson'
-        },
-        'layout': {
-            'line-join': 'round',
-            'line-cap': 'round',
-        },
-        'paint': {
-            'line-color': ['interpolate', ['linear'], ['get', 'ShortestPathLineweight'],
-                450, '#cd0127',
-                900, '#7e0728',
-                1350, '#a83593',
-                1800, '#7e5ee9',
-                2250, '#6d61ed',
-            ],
-            'line-width': [
-                'interpolate',
-                ['linear'],
-                ['get', 'ShortestPathLineweight'],
-                450, 10,  // 0 count corresponds to 1 pixel width
-                900, 8,  // 1 count corresponds to 2 pixels width
-                1350, 6,  // 3 count corresponds to 4 pixels width
-                1800, 4,  // 6 count corresponds to 6 pixels width
-                2500, 2   // 8 count corresponds to 8 pixels width
-            ],
-            'line-opacity': 0
-        }
-    }, firstSymbolId);
+//     map.addLayer({
+//         'id': 'MN_105_mobility1',
+//         'type': 'line',
+//         'source': {
+//             'type': 'geojson',
+//             'data': 'data/MN_105_walkability1.geojson'
+//         },
+//         'layout': {
+//             'line-join': 'round',
+//             'line-cap': 'round',
+//         },
+//         'paint': {
+//             'line-color': ['interpolate', ['linear'], ['get', 'ShortestPathLineweight'],
+//                 450, '#cd0127',
+//                 900, '#7e0728',
+//                 1350, '#a83593',
+//                 1800, '#7e5ee9',
+//                 2250, '#6d61ed',
+//             ],
+//             'line-width': [
+//                 'interpolate',
+//                 ['linear'],
+//                 ['get', 'ShortestPathLineweight'],
+//                 450, 10,  // 0 count corresponds to 1 pixel width
+//                 900, 8,  // 1 count corresponds to 2 pixels width
+//                 1350, 6,  // 3 count corresponds to 4 pixels width
+//                 1800, 4,  // 6 count corresponds to 6 pixels width
+//                 2500, 2   // 8 count corresponds to 8 pixels width
+//             ],
+//             'line-opacity': 0
+//         }
+//     }, firstSymbolId);
 
-    map.addLayer({
-        'id': 'MN_105_mobility2',
-        'type': 'line',
-        'source': {
-            'type': 'geojson',
-            'data': 'data/MN_105_walkability2.geojson'
-        },
-        'layout': {
-            'line-join': 'round',
-            'line-cap': 'round',
-        },
-        'paint': {
-            'line-color': ['interpolate', ['linear'], ['get', 'walkability2_lineweight'],
-                360, '#cd0127',
-                720, '#7e0728',
-                1080, '#a83593',
-                1440, '#7e5ee9',
-                1800, '#6d61ed',
-            ],
-            'line-width': [
-                'interpolate',
-                ['linear'],
-                ['get', 'walkability2_lineweight'],
-                360, 10,  // 0 count corresponds to 1 pixel width
-                720, 8,  // 1 count corresponds to 2 pixels width
-                1080, 6,  // 3 count corresponds to 4 pixels width
-                1440, 4,  // 6 count corresponds to 6 pixels width
-                1800, 2   // 8 count corresponds to 8 pixels width
-            ],
-            'line-opacity': 0
-        }
-    }, firstSymbolId);
+//     map.addLayer({
+//         'id': 'MN_105_mobility2',
+//         'type': 'line',
+//         'source': {
+//             'type': 'geojson',
+//             'data': 'data/MN_105_walkability2.geojson'
+//         },
+//         'layout': {
+//             'line-join': 'round',
+//             'line-cap': 'round',
+//         },
+//         'paint': {
+//             'line-color': ['interpolate', ['linear'], ['get', 'walkability2_lineweight'],
+//                 360, '#cd0127',
+//                 720, '#7e0728',
+//                 1080, '#a83593',
+//                 1440, '#7e5ee9',
+//                 1800, '#6d61ed',
+//             ],
+//             'line-width': [
+//                 'interpolate',
+//                 ['linear'],
+//                 ['get', 'walkability2_lineweight'],
+//                 360, 10,  // 0 count corresponds to 1 pixel width
+//                 720, 8,  // 1 count corresponds to 2 pixels width
+//                 1080, 6,  // 3 count corresponds to 4 pixels width
+//                 1440, 4,  // 6 count corresponds to 6 pixels width
+//                 1800, 2   // 8 count corresponds to 8 pixels width
+//             ],
+//             'line-opacity': 0
+//         }
+//     }, firstSymbolId);
 
-    map.addLayer({
-        'id': 'MN_105_POI',
-        'type': 'fill-extrusion',
-        'source': {
-            'type': 'geojson',
-            'data': 'data/MN_105_O-D_POI.geojson'
-        },
-        'paint': {
-            'fill-extrusion-color': ['interpolate', ['linear'], ['get', 'NearestStationofPOI'],
-                30, '#edde9a',
-                35, '#dfd090',
-                45, '#8b6731',
-                55, '#db7002',
-                60, '#c73131',
-            ],
-            'fill-extrusion-height': [
-                'interpolate',
-                ['linear'],
-                ['get', 'NearestStationofPOI'],
-                30, 30,  // 0 count corresponds to 1 pixel width
-                35, 100,  // 1 count corresponds to 2 pixels width
-                45, 170,  // 3 count corresponds to 4 pixels width
-                55, 240,  // 6 count corresponds to 6 pixels width
-                60, 300   // 8 count corresponds to 8 pixels width
-            ],
-            'fill-extrusion-opacity': 0,
-            'fill-extrusion-base': 0
-        }
-    }, firstSymbolId);
+//     map.addLayer({
+//         'id': 'MN_105_POI',
+//         'type': 'fill-extrusion',
+//         'source': {
+//             'type': 'geojson',
+//             'data': 'data/MN_105_O-D_POI.geojson'
+//         },
+//         'paint': {
+//             'fill-extrusion-color': ['interpolate', ['linear'], ['get', 'NearestStationofPOI'],
+//                 30, '#edde9a',
+//                 35, '#dfd090',
+//                 45, '#8b6731',
+//                 55, '#db7002',
+//                 60, '#c73131',
+//             ],
+//             'fill-extrusion-height': [
+//                 'interpolate',
+//                 ['linear'],
+//                 ['get', 'NearestStationofPOI'],
+//                 30, 30,  // 0 count corresponds to 1 pixel width
+//                 35, 100,  // 1 count corresponds to 2 pixels width
+//                 45, 170,  // 3 count corresponds to 4 pixels width
+//                 55, 240,  // 6 count corresponds to 6 pixels width
+//                 60, 300   // 8 count corresponds to 8 pixels width
+//             ],
+//             'fill-extrusion-opacity': 0,
+//             'fill-extrusion-base': 0
+//         }
+//     }, firstSymbolId);
 
-    map.addLayer({
-        'id': 'MN_109_mobility1',
-        'type': 'line',
-        'source': {
-            'type': 'geojson',
-            'data': 'data/MN_109_walkability1.geojson'
-        },
-        'layout': {
-            'line-join': 'round',
-            'line-cap': 'round',
-        },
-        'paint': {
-            'line-color': ['interpolate', ['linear'], ['get', 'ShortestPathLineweight'],
-                450, '#cd0127',
-                900, '#7e0728',
-                1350, '#a83593',
-                1800, '#7e5ee9',
-                2250, '#6d61ed',
-            ],
-            'line-width': [
-                'interpolate',
-                ['linear'],
-                ['get', 'ShortestPathLineweight'],
-                450, 10,  // 0 count corresponds to 1 pixel width
-                900, 8,  // 1 count corresponds to 2 pixels width
-                1350, 6,  // 3 count corresponds to 4 pixels width
-                1800, 4,  // 6 count corresponds to 6 pixels width
-                2500, 2   // 8 count corresponds to 8 pixels width
-            ],
-            'line-opacity': 0
-        }
-    }, firstSymbolId);
+//     map.addLayer({
+//         'id': 'MN_109_mobility1',
+//         'type': 'line',
+//         'source': {
+//             'type': 'geojson',
+//             'data': 'data/MN_109_walkability1.geojson'
+//         },
+//         'layout': {
+//             'line-join': 'round',
+//             'line-cap': 'round',
+//         },
+//         'paint': {
+//             'line-color': ['interpolate', ['linear'], ['get', 'ShortestPathLineweight'],
+//                 450, '#cd0127',
+//                 900, '#7e0728',
+//                 1350, '#a83593',
+//                 1800, '#7e5ee9',
+//                 2250, '#6d61ed',
+//             ],
+//             'line-width': [
+//                 'interpolate',
+//                 ['linear'],
+//                 ['get', 'ShortestPathLineweight'],
+//                 450, 10,  // 0 count corresponds to 1 pixel width
+//                 900, 8,  // 1 count corresponds to 2 pixels width
+//                 1350, 6,  // 3 count corresponds to 4 pixels width
+//                 1800, 4,  // 6 count corresponds to 6 pixels width
+//                 2500, 2   // 8 count corresponds to 8 pixels width
+//             ],
+//             'line-opacity': 0
+//         }
+//     }, firstSymbolId);
 
-    map.addLayer({
-        'id': 'MN_109_mobility2',
-        'type': 'line',
-        'source': {
-            'type': 'geojson',
-            'data': 'data/MN_109_walkability2.geojson'
-        },
-        'layout': {
-            'line-join': 'round',
-            'line-cap': 'round',
-        },
-        'paint': {
-            'line-color': ['interpolate', ['linear'], ['get', 'walkability2_lineweight'],
-                450, '#cd0127',
-                900, '#7e0728',
-                1350, '#a83593',
-                1800, '#7e5ee9',
-                2300, '#6d61ed',
-            ],
-            'line-width': [
-                'interpolate',
-                ['linear'],
-                ['get', 'walkability2_lineweight'],
-                450, 10,  // 0 count corresponds to 1 pixel width
-                900, 8,  // 1 count corresponds to 2 pixels width
-                1350, 6,  // 3 count corresponds to 4 pixels width
-                1800, 4,  // 6 count corresponds to 6 pixels width
-                2300, 2   // 8 count corresponds to 8 pixels width
-            ],
-            'line-opacity': 0
-        }
-    }, firstSymbolId);
+//     map.addLayer({
+//         'id': 'MN_109_mobility2',
+//         'type': 'line',
+//         'source': {
+//             'type': 'geojson',
+//             'data': 'data/MN_109_walkability2.geojson'
+//         },
+//         'layout': {
+//             'line-join': 'round',
+//             'line-cap': 'round',
+//         },
+//         'paint': {
+//             'line-color': ['interpolate', ['linear'], ['get', 'walkability2_lineweight'],
+//                 450, '#cd0127',
+//                 900, '#7e0728',
+//                 1350, '#a83593',
+//                 1800, '#7e5ee9',
+//                 2300, '#6d61ed',
+//             ],
+//             'line-width': [
+//                 'interpolate',
+//                 ['linear'],
+//                 ['get', 'walkability2_lineweight'],
+//                 450, 10,  // 0 count corresponds to 1 pixel width
+//                 900, 8,  // 1 count corresponds to 2 pixels width
+//                 1350, 6,  // 3 count corresponds to 4 pixels width
+//                 1800, 4,  // 6 count corresponds to 6 pixels width
+//                 2300, 2   // 8 count corresponds to 8 pixels width
+//             ],
+//             'line-opacity': 0
+//         }
+//     }, firstSymbolId);
 
-    map.addLayer({
-        'id': 'MN_109_POI',
-        'type': 'fill-extrusion',
-        'source': {
-            'type': 'geojson',
-            'data': 'data/MN_109_O-D_POI.geojson'
-        },
-        'paint': {
-            'fill-extrusion-color': ['interpolate', ['linear'], ['get', 'NearestStationofPOI'],
-                30, '#edde9a',
-                35, '#dfd090',
-                45, '#8b6731',
-                55, '#db7002',
-                60, '#c73131',
-            ],
-            'fill-extrusion-height': [
-                'interpolate',
-                ['linear'],
-                ['get', 'NearestStationofPOI'],
-                30, 30,  // 0 count corresponds to 1 pixel width
-                35, 100,  // 1 count corresponds to 2 pixels width
-                45, 170,  // 3 count corresponds to 4 pixels width
-                55, 240,  // 6 count corresponds to 6 pixels width
-                60, 300   // 8 count corresponds to 8 pixels width
-            ],
-            'fill-extrusion-opacity': 0,
-            'fill-extrusion-base': 0
-        }
-    }, firstSymbolId);
+//     map.addLayer({
+//         'id': 'MN_109_POI',
+//         'type': 'fill-extrusion',
+//         'source': {
+//             'type': 'geojson',
+//             'data': 'data/MN_109_O-D_POI.geojson'
+//         },
+//         'paint': {
+//             'fill-extrusion-color': ['interpolate', ['linear'], ['get', 'NearestStationofPOI'],
+//                 30, '#edde9a',
+//                 35, '#dfd090',
+//                 45, '#8b6731',
+//                 55, '#db7002',
+//                 60, '#c73131',
+//             ],
+//             'fill-extrusion-height': [
+//                 'interpolate',
+//                 ['linear'],
+//                 ['get', 'NearestStationofPOI'],
+//                 30, 30,  // 0 count corresponds to 1 pixel width
+//                 35, 100,  // 1 count corresponds to 2 pixels width
+//                 45, 170,  // 3 count corresponds to 4 pixels width
+//                 55, 240,  // 6 count corresponds to 6 pixels width
+//                 60, 300   // 8 count corresponds to 8 pixels width
+//             ],
+//             'fill-extrusion-opacity': 0,
+//             'fill-extrusion-base': 0
+//         }
+//     }, firstSymbolId);
 
 
-    map.addLayer({
-        'id': "medianIncome",
-        'type': "fill",
-        'source': {
-            'type': "geojson",
-            'data': "data/medianIncome.geojson",
-        },
-        'paint': {
-            'fill-color': ['step', ['get', 'MHHI'],
-                '#ffffff',
-                20000, '#ccedf5',
-                50000, '#99daea',
-                75000, '#66c7e0',
-                100000, '#33b5d5',
-                150000, '#00a2ca'],
-        'fill-opacity': 0
-        },
+//     map.addLayer({
+//         'id': "medianIncome",
+//         'type': "fill",
+//         'source': {
+//             'type': "geojson",
+//             'data': "data/medianIncome.geojson",
+//         },
+//         'paint': {
+//             'fill-color': ['step', ['get', 'MHHI'],
+//                 '#ffffff',
+//                 20000, '#ccedf5',
+//                 50000, '#99daea',
+//                 75000, '#66c7e0',
+//                 100000, '#33b5d5',
+//                 150000, '#00a2ca'],
+//         'fill-opacity': 0
+//         },
         
-    },'waterway');
-});
+//     },'waterway');
+// });
 
 // Setup the instance, pass callback functions
 scroller
@@ -613,7 +640,9 @@ scroller
             chapter.onChapterExit.forEach(setLayerOpacity);
         }
     });
-;
+
+}); 
+    ;
 
 /* Here we watch for any resizing of the screen to
 adjust our scrolling setup */
