@@ -1,6 +1,6 @@
 var config = {    
-    accessToken: 'pk.eyJ1IjoiYWRub3RpY2lhcyIsImEiOiJjbTlyb2Mzb2IxOXQzMmtvZ2RkZWoybzMxIn0.eGFfTyBGuA16Gdx92WmbOw',
     style: 'mapbox://styles/adnoticias/cmae63g66004101s884694lay',
+    accessToken: 'pk.eyJ1IjoiYWRub3RpY2lhcyIsImEiOiJjbWFlNm9vYjAwNDhlMm1wdjI0czdmZHQ0In0.Tqcwo67uQ-pwBK9Xaph8Cg',
     theme: 'adnoticias',
     backgroundImage: 'images/cover page1.png',
     toptitle: 'Publicado el 7 de mayo de 2025',
@@ -28,72 +28,73 @@ var config = {
             rotateAnimation: false,
             callback: '',
             onChapterEnter: [
-                {
-                    layer: 'MunicipiosEdomex',
-                    opacity: 1
-                },
-                {
-                    layer: 'FMMunicipios2020',
-                    opacity: 0
-                },
-                {
-                    layer: 'FMMunicipios2024',
-                    opacity: 0
-                },
-                {
-                    layer: 'ranchos-opb',
-                    opacity: 0
-                },
-                {
-                    layer: 'bases-halconeo-2020',
-                    opacity: 0
-                },
-                {
-                    layer: 'rancho-las-piuelas-p',
-                    opacity: 0
-                },
-                {
-                    layer: 'rancho-calpa-p',
-                    opacity: 0
-                },
-                {
-                    layer: 'ataque-sep-2020',
-                    opacity:0
-                }
+                // {
+                //     layer: 'MunicipiosEdomex',
+                //     opacity: 1
+                // },
+                // {
+                //     layer: 'FMMunicipios2020',
+                //     opacity: 0
+                // },
+                // {
+                //     layer: 'FMMunicipios2024',
+                //     opacity: 0
+                // },
+                // {
+                //     layer: 'ranchos-opb',
+                //     opacity: 0
+                // },
+                // {
+                //     layer: 'bases-halconeo-2020',
+                //     opacity: 0
+                // },
+                // {
+                //     layer: 'rancho-las-piuelas-p',
+                //     opacity: 0
+                // },
+                // {
+                //     layer: 'rancho-calpa-p',
+                //     opacity: 0
+                // },
+                // {
+                //     layer: 'ataque-sep-2020',
+                //     opacity:0
+                // }
             ],
             onChapterExit: [
-                {
-                    layer: 'MunicipiosEdomex',
-                    opacity: 1
-                },
-                {
-                    layer: 'FMMunicipios2020',
-                    opacity: 0
-                },
-                {
-                    layer: 'FMMunicipios2024',
-                    opacity: 1
-                },
-                {
-                    layer: 'ranchos-opb',
-                    opacity: 0
-                },
-                {
-                    layer: 'bases-halconeo-2020',
-                    opacity: 0
-                },
-                {
-                    layer: 'rancho-las-piuelas-p',
-                    opacity: 0
-                },
-                {
-                    layer: 'rancho-calpa-p',
-                    opacity: 0
-                }
+                // {
+                //     layer: 'MunicipiosEdomex',
+                //     opacity: 1
+                // },
+                // {
+                //     layer: 'FMMunicipios2020',
+                //     opacity: 0
+                // },
+                // {
+                //     layer: 'FMMunicipios2024',
+                //     opacity: 1
+                // },
+                // {
+                //     layer: 'ranchos-opb',
+                //     opacity: 0
+                // },
+                // {
+                //     layer: 'bases-halconeo-2020',
+                //     opacity: 0
+                // },
+                // {
+                //     layer: 'rancho-las-piuelas-p',
+                //     opacity: 0
+                // },
+                // {
+                //     layer: 'rancho-calpa-p',
+                //     opacity: 0
+                // }
             ]
         },
         {
             id: 'bike_mapping',
+            alignment: 'full',
             title: 'DISTRIBUTION OF BIKES EACH BLOCK',
             image: 'images/bike_mapping.png',
             imageCredit: 'Data from NYC Opendata, Census',
@@ -104,18 +105,22 @@ var config = {
                 pitch: 0,
                 bearing: 0
             },
-            onChapterEnter: [{
-                layer: 'bike_mapping',
-                opacity: 0.8},
+            onChapterEnter: [
+                // {
+                // layer: 'bike_mapping',
+                // opacity: 0.8},
             ],
-            onChapterExit: [{
-                layer: 'bike_mapping',
-                opacity: 0
-            },]
+            onChapterExit: [
+            //     {
+            //     layer: 'bike_mapping',
+            //     opacity: 0
+            // },
+        ]
         },
         
         {
             id: 'subway_mapping',
+            alignment: 'full',
             title: 'DISTRIBUTION OF SUBWAY ENTRANCES EACH BLOCK',
             image: 'images/subway_mapping1.png',
             imageCredit: 'Data from NYC Opendata, Census',
@@ -126,17 +131,21 @@ var config = {
                 pitch: 38,
                 bearing: -18
             },
-            onChapterEnter: [{
-                layer: 'subway_mapping',
-                opacity: 1.0},
+            onChapterEnter: [
+                // {
+                // layer: 'subway_mapping',
+                // opacity: 1.0},
             ],
-            onChapterExit: [{
-                layer: 'subway_mapping',
-                opacity: 0
-            },]
+            onChapterExit: [
+            //     {
+            //     layer: 'subway_mapping',
+            //     opacity: 0
+            // },
+        ]
         },
         {
             id: 'hex_binning',
+            alignment: 'full',
             title: 'STREET VIEW OF UNEQUAL PARTS',
             image: 'images/bus_mapping.png',
             imageCredit: 'subway entrances in NYC',
@@ -147,18 +156,22 @@ var config = {
                 pitch: 38,
                 bearing: -18
             },
-            onChapterEnter: [{
-                layer: 'hex_binning',
-                opacity: 1.0},
+            onChapterEnter: [
+                // {
+                // layer: 'hex_binning',
+                // opacity: 1.0},
             ],
-            onChapterExit: [{
-                layer: 'hex_binning',
-                opacity: 0
-            },]
+            onChapterExit: [
+            //     {
+            //     layer: 'hex_binning',
+            //     opacity: 0
+            // },
+        ]
         },
         
         {
             id: 'MN_105_Mobility1',
+            alignment: 'full',
             title: 'MN_105_MOBILITY FROM SUBWAY',
             image: 'images/MN_105_walkingability1.png',
             imageCredit: '<a href="https://www.nyc.gov/site/planning/data-maps/open-data/dwn-pluto-mappluto.page">NYC PLANNING</a>',
@@ -170,32 +183,33 @@ var config = {
                 bearing: 29
             },
             onChapterEnter: [
-                {
-                    layer: 'medianIncome',
-                    opacity: 0.8
-                },
-                {
-                    layer: 'MN_105_mobility1',
-                    opacity: 1.0
-                },
-                {
-                    layer: 'Subway_Entrances',
-                    opacity: 1.0
-                }
+                // {
+                //     layer: 'medianIncome',
+                //     opacity: 0.8
+                // },
+                // {
+                //     layer: 'MN_105_mobility1',
+                //     opacity: 1.0
+                // },
+                // {
+                //     layer: 'Subway_Entrances',
+                //     opacity: 1.0
+                // }
             ],
             onChapterExit: [
-                {
-                    layer: 'MN_105_mobility1',
-                    opacity: 0
-                },
-                {
-                    layer: 'medianIncome',
-                    opacity: 0.0
-                },
+                // {
+                //     layer: 'MN_105_mobility1',
+                //     opacity: 0
+                // },
+                // {
+                //     layer: 'medianIncome',
+                //     opacity: 0.0
+                // },
             ]
         },
         {
             id: 'MN_105_Mobility_2',
+            alignment: 'full',
             title: 'MN_105_O-D ANALYSIS:PLAZAS TO SUBWAY LINE1',
             image: 'images/MN_105_O-D of POI.png',
             imageCredit: '<a href="https://www.nyc.gov/site/planning/data-maps/open-data/dwn-pluto-mappluto.page">NYC PLANNING</a>',
@@ -207,36 +221,37 @@ var config = {
                 bearing: 29
             },
             onChapterEnter: [
-                {
-                    layer: 'medianIncome',
-                    opacity: 0.8
-                },
-                {
-                    layer: 'MN_105_mobility2',
-                    opacity: 1.0
-                },
-                {
-                    layer: 'MN_105_POI',
-                    opacity: 1.0
-                },
+                // {
+                //     layer: 'medianIncome',
+                //     opacity: 0.8
+                // },
+                // {
+                //     layer: 'MN_105_mobility2',
+                //     opacity: 1.0
+                // },
+                // {
+                //     layer: 'MN_105_POI',
+                //     opacity: 1.0
+                // },
             ],
             onChapterExit: [
-                {
-                    layer: 'medianIncome',
-                    opacity: 0.0
-                },
-                {
-                    layer: 'MN_105_mobility2',
-                    opacity: 0
-                },
-                {
-                    layer: 'MN_105_POI',
-                    opacity: 0
-                },
+                // {
+                //     layer: 'medianIncome',
+                //     opacity: 0.0
+                // },
+                // {
+                //     layer: 'MN_105_mobility2',
+                //     opacity: 0
+                // },
+                // {
+                //     layer: 'MN_105_POI',
+                //     opacity: 0
+                // },
             ]
         },
         {
             id: 'MN_109_Mobility1',
+            alignment: 'full',
             title: 'MN_109_MOBILITY FROM SUBWAY',
             image: 'images/MN_109_Walkingability1.png',
             imageCredit: '<a href="https://www.nyc.gov/site/planning/data-maps/open-data/dwn-pluto-mappluto.page">MAP PLUTO</a>',
@@ -248,28 +263,29 @@ var config = {
                 bearing: 28
             },
             onChapterEnter: [
-                {
-                    layer: 'medianIncome',
-                    opacity: 0.8
-                },
-                {
-                    layer: 'MN_109_mobility1',
-                    opacity: 1
-                }
+                // {
+                //     layer: 'medianIncome',
+                //     opacity: 0.8
+                // },
+                // {
+                //     layer: 'MN_109_mobility1',
+                //     opacity: 1
+                // }
             ],
             onChapterExit: [
-                {
-                    layer: 'medianIncome',
-                    opacity: 0.0
-                },
-                {
-                    layer: 'MN_109_mobility1',
-                    opacity: 0
-                }
+                // {
+                //     layer: 'medianIncome',
+                //     opacity: 0.0
+                // },
+                // {
+                //     layer: 'MN_109_mobility1',
+                //     opacity: 0
+                // }
             ]
         },
         {
             id: 'MN_109_Mobility2',
+            alignment: 'full',
             title: 'MN_109_O-D ANALYSIS:PLAZAS TO SUBWAY LINE1',
             image: 'images/MN_109_O-D_POI.png',
             imageCredit: '<a href="https://www.nytimes.com/2020/04/09/nyregion/coronavirus-queens-corona-jackson-heights-elmhurst.html">The New York Times</a>',
@@ -281,37 +297,38 @@ var config = {
                 bearing: 28
             },
             onChapterEnter: [
-                {
-                    layer: 'medianIncome',
-                    opacity: 0.8
-                },
-                {
-                    layer: 'MN_109_mobility2',
-                    opacity: 1
-                },
-                {
-                    layer: 'MN_109_POI',
-                    opacity: 1
-                }
+                // {
+                //     layer: 'medianIncome',
+                //     opacity: 0.8
+                // },
+                // {
+                //     layer: 'MN_109_mobility2',
+                //     opacity: 1
+                // },
+                // {
+                //     layer: 'MN_109_POI',
+                //     opacity: 1
+                // }
             ],
             onChapterExit: [
-                {
-                    layer: 'medianIncome',
-                    opacity: 0.0
-                },
-                {
-                    layer: 'MN_109_mobility2',
-                    opacity: 0
-                },
-                {
-                    layer: 'MN_109_POI',
-                    opacity: 0
-                }
+                // {
+                //     layer: 'medianIncome',
+                //     opacity: 0.0
+                // },
+                // {
+                //     layer: 'MN_109_mobility2',
+                //     opacity: 0
+                // },
+                // {
+                //     layer: 'MN_109_POI',
+                //     opacity: 0
+                // }
             ]
         },
 
         {
             id: 'bus_mapping',
+            alignment: 'full',
             title: 'STREET VIEW BASED ON VISUALIZATION',
             image: 'images/street_view_photos.png',
             imageCredit: 'Street Static View From Google',
@@ -322,14 +339,17 @@ var config = {
                 pitch: 0,
                 bearing: 0
             },
-            onChapterEnter: [{
-                layer: 'bus_mapping',
-                opacity: 1.0},
+            onChapterEnter: [
+                // {
+                // layer: 'bus_mapping',
+                // opacity: 1.0},
             ],
-            onChapterExit: [{
-                layer: 'bus_mapping',
-                opacity: 0
-            },]
+            onChapterExit: [
+            //     {
+            //     layer: 'bus_mapping',
+            //     opacity: 0
+            // },
+        ]
         },
 
     ]
